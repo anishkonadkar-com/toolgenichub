@@ -1,0 +1,6 @@
+{
+  "name": "ToolGenic Utility Tools",
+  "description": "Free online utility tools for developers, designers, and creators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
