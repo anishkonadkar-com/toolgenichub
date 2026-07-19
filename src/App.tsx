@@ -1062,7 +1062,7 @@ export default function App() {
                       </h3>
                       <p>
                         For any questions regarding our browser-side sandboxed operations, contact us at: 
-                        <strong className="text-blue-500 ml-1">support@toolgenic.com</strong>.
+                        <strong className="text-blue-500 ml-1">support@toolgenichub.com</strong>.
                       </p>
                     </div>
                   </div>
@@ -1179,8 +1179,8 @@ export default function App() {
                           </div>
                           <div>
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email Support</p>
-                            <a href="mailto:support@toolgenic.com" className="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-blue-500 transition-colors">
-                              support@toolgenic.com
+                            <a href="mailto:support@toolgenichub.com" className="text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-blue-500 transition-colors">
+                              support@toolgenichub.com
                             </a>
                           </div>
                         </div>

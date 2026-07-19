@@ -2421,8 +2421,8 @@ export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetad
   updateMeta('description', desc);
   updateMeta('og:title', title, true);
   updateMeta('og:description', desc, true);
-  updateMeta('og:url', `https://toolgenic.com${path}`, true);
-  updateMeta('og:image', 'https://toolgenic.com/assets/og-image.png', true);
+  updateMeta('og:url', `https://toolgenichub.com${path}`, true);
+  updateMeta('og:image', 'https://toolgenichub.com/assets/og-image.png', true);
   updateMeta('twitter:card', 'summary_large_image');
   updateMeta('twitter:title', title);
   updateMeta('twitter:description', desc);
@@ -2434,7 +2434,7 @@ export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetad
     canonicalEl.setAttribute('rel', 'canonical');
     document.head.appendChild(canonicalEl);
   }
-  canonicalEl.setAttribute('href', `https://toolgenic.com${path}`);
+  canonicalEl.setAttribute('href', `https://toolgenichub.com${path}`);
 
   // Inject JSON-LD Schema
   let schemaEl = document.getElementById('toolgenic-jsonld-schema');
@@ -2450,10 +2450,10 @@ export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetad
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       'name': 'ToolGenic',
-      'url': 'https://toolgenic.com/',
+      'url': 'https://toolgenichub.com/',
       'potentialAction': {
         '@type': 'SearchAction',
-        'target': 'https://toolgenic.com/?q={search_term_string}',
+        'target': 'https://toolgenichub.com/?q={search_term_string}',
         'query-input': 'required name=search_term_string'
       }
     });
@@ -2461,49 +2461,49 @@ export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetad
 
   // 1. Breadcrumb Schema
   const breadcrumbItems = [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://toolgenic.com/' }
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://toolgenichub.com/' }
   ];
   if (category) {
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 2,
       name: category.name,
-      item: `https://toolgenic.com${category.path}`
+      item: `https://toolgenichub.com${category.path}`
     });
   } else if (isSitemap) {
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 2,
       name: 'Sitemap',
-      item: 'https://toolgenic.com/sitemap/'
+      item: 'https://toolgenichub.com/sitemap/'
     });
   } else if (isAbout) {
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 2,
       name: 'About',
-      item: 'https://toolgenic.com/about/'
+      item: 'https://toolgenichub.com/about/'
     });
   } else if (isPrivacy) {
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 2,
       name: 'Privacy Policy',
-      item: 'https://toolgenic.com/privacy/'
+      item: 'https://toolgenichub.com/privacy/'
     });
   } else if (isTerms) {
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 2,
       name: 'Terms & Conditions',
-      item: 'https://toolgenic.com/terms/'
+      item: 'https://toolgenichub.com/terms/'
     });
   } else if (isContact) {
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 2,
       name: 'Contact',
-      item: 'https://toolgenic.com/contact/'
+      item: 'https://toolgenichub.com/contact/'
     });
   }
   if (tool) {
@@ -2513,14 +2513,14 @@ export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetad
         '@type': 'ListItem',
         position: 2,
         name: catObj.name,
-        item: `https://toolgenic.com${catObj.path}`
+        item: `https://toolgenichub.com${catObj.path}`
       });
     }
     breadcrumbItems.push({
       '@type': 'ListItem',
       position: 3,
       name: tool.name,
-      item: `https://toolgenic.com${tool.path}`
+      item: `https://toolgenichub.com${tool.path}`
     });
   }
 

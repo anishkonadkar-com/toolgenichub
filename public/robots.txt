@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://toolgenic.com/sitemap.xml
+Sitemap: https://toolgenichub.com/sitemap.xml
