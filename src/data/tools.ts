@@ -2362,8 +2362,8 @@ export const TOOLS: ToolMetadata[] = [
 export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetadata | null) {
   if (typeof window === 'undefined') return;
 
-  let title = 'ToolGenic — Free Online Utility Tools & Converters (100% Private)';
-  let desc = 'Access 500+ free online utility tools, image compressors, PDF splitters, unit converters, and developer formatters. All processed securely in your browser.';
+  let title = 'ToolGenicHub — Free Online Utility Tools & Converters (100% Private)';
+  let desc = `Access ${TOOLS.length} free online utility tools, image compressors, PDF splitters, unit converters, and developer formatters. All processed securely in your browser.`;
   let path = '/';
 
   const normalizedPath = window.location.pathname.replace(/\/$/, '');
@@ -2374,32 +2374,32 @@ export function updateSeoTags(tool: ToolMetadata | null, category: CategoryMetad
   const isContact = normalizedPath === '/contact';
 
   if (tool) {
-    title = tool.seoTitle;
-    desc = tool.seoDesc;
+    title = tool.seoTitle.replace(/ToolGenic(?!Hub)/g, 'ToolGenicHub');
+    desc = tool.seoDesc.replace(/ToolGenic(?!Hub)/g, 'ToolGenicHub');
     path = tool.path;
   } else if (category) {
-    title = `${category.name} — Free Browser Utilities | ToolGenic`;
+    title = `${category.name} — Free Browser Utilities | ToolGenicHub`;
     desc = `${category.name} tools for you. ${category.desc} 100% secure client-side execution.`;
     path = category.path;
   } else if (isSitemap) {
-    title = 'Sitemap — Explore All Free Utility Tools | ToolGenic';
-    desc = 'Browse the complete index of 100% free online utility tools on ToolGenic. Instant client-side calculators, video tools, PDF converters, and image editors.';
+    title = 'Sitemap — Explore All Free Utility Tools | ToolGenicHub';
+    desc = `Browse the complete index of ${TOOLS.length} 100% free online utility tools on ToolGenicHub. Instant client-side calculators, video tools, PDF converters, and image editors.`;
     path = '/sitemap/';
   } else if (isAbout) {
-    title = 'About ToolGenic — Our Mission, Vision & Free Tools Philosophy';
-    desc = 'Learn about ToolGenic, a 100% free browser-based online utility platform with offline-first local processing and zero-server data storage.';
+    title = 'About ToolGenicHub — Our Mission, Vision & Free Tools Philosophy';
+    desc = 'Learn about ToolGenicHub, a 100% free browser-based online utility platform with offline-first local processing and zero-server data storage.';
     path = '/about/';
   } else if (isPrivacy) {
-    title = 'Privacy Policy — GDPR Compliant & 100% Browser Local Processing';
-    desc = 'Read the ToolGenic privacy policy. Your security is our highest priority: all tools operate locally in your browser memory with no data uploads.';
+    title = 'Privacy Policy — GDPR Compliant & 100% Browser Local Processing | ToolGenicHub';
+    desc = 'Read the ToolGenicHub privacy policy. Your security is our highest priority: all tools operate locally in your browser memory with no data uploads.';
     path = '/privacy/';
   } else if (isTerms) {
-    title = 'Terms & Conditions — Acceptable Use & Browser Local Execution';
-    desc = 'Review the terms and conditions for using ToolGenic. Free browser calculators, media editors, and converters for private sandboxed workflows.';
+    title = 'Terms & Conditions — Acceptable Use & Browser Local Execution | ToolGenicHub';
+    desc = 'Review the terms and conditions for using ToolGenicHub. Free browser calculators, media editors, and converters for private sandboxed workflows.';
     path = '/terms/';
   } else if (isContact) {
-    title = 'Contact Us — Professional Support & Feedback | ToolGenic';
-    desc = 'Get in touch with the ToolGenic team. Send your custom converter suggestions, feedback on tools, or report issues for offline utilities.';
+    title = 'Contact Us — Professional Support & Feedback | ToolGenicHub';
+    desc = 'Get in touch with the ToolGenicHub team. Send your custom converter suggestions, feedback on tools, or report issues for offline utilities.';
     path = '/contact/';
   }
 

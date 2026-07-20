@@ -1,0 +1,16 @@
+{
+  "short_name": "ToolGenicHub",
+  "name": "ToolGenicHub - Free Online Utility Tools & Converters",
+  "description": "Free, browser-based offline-first utility tools for images, PDFs, developer formatters, and calculators.",
+  "start_url": "/",
+  "background_color": "#121420",
+  "theme_color": "#2563eb",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "https://toolgenichub.com/assets/og-image.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

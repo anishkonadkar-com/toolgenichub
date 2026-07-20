@@ -84,6 +84,7 @@ import DiscountCalculatorTool from './components/calculators/DiscountCalculatorT
 import IncomeTaxCalculatorTool from './components/calculators/IncomeTaxCalculatorTool';
 
 import { TOOLS as METADATA, CATEGORIES, updateSeoTags, ToolMetadata } from './data/tools';
+import CategorySeoContent from './components/CategorySeoContent';
 
 // ================= TYPES =================
 interface Tool {
@@ -97,7 +98,7 @@ interface Tool {
 }
 
 const POPULAR_TOOLS = [
-  { id: 'image-compressor', name: 'Compress Image', path: '/image-tools/compress-image/', desc: 'Dramatically reduce JPG, PNG, and WebP image files' },
+  { id: 'compress-image', name: 'Compress Image', path: '/image-tools/compress-image/', desc: 'Dramatically reduce JPG, PNG, and WebP image files' },
   { id: 'merge-pdf', name: 'Merge PDF', path: '/pdf-tools/merge-pdf/', desc: 'Combine multiple PDF files into one single document' },
   { id: 'heic-to-jpg', name: 'HEIC to JPG', path: '/image-tools/heic-to-jpg/', desc: 'Convert Apple HEIC photos to standard JPEGs instantly' },
   { id: 'json-formatter', name: 'JSON Formatter', path: '/developer-tools/json-formatter/', desc: 'Prettify, validate, parse, and minify JSON payloads' }
@@ -670,7 +671,7 @@ export default function App() {
                 {activeTool === 'hash-generator' && <HashGenerator triggerNotification={triggerNotification} theme={theme} />}
                 {activeTool === 'jwt-debugger' && <JwtDebugger triggerNotification={triggerNotification} theme={theme} />}
                 {activeTool === 'word-counter' && <WordCounterTool triggerNotification={triggerNotification} theme={theme} />}
-                {activeTool === 'image-compressor' && <ImageCompressorTool triggerNotification={triggerNotification} theme={theme} />}
+                {activeTool === 'compress-image' && <ImageCompressorTool triggerNotification={triggerNotification} theme={theme} />}
                 {activeTool === 'unit-converter' && <UnitConverterTool triggerNotification={triggerNotification} theme={theme} />}
                 
                 {/* Imported Standalone Tools */}
@@ -1502,6 +1503,8 @@ export default function App() {
                   ))}
                 </div>
               </section>
+
+              <CategorySeoContent activeCategory={selectedCategory} />
             </div>
           ) : (
             /* ================= APP DASHBOARD HOME ================= */
@@ -1509,7 +1512,7 @@ export default function App() {
               
               {/* Hero Header */}
               <div className="mb-10 text-center md:text-left">
-                <p className="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-widest uppercase mb-2">15+ tools · offline-first sandbox</p>
+                <p className="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-widest uppercase mb-2">{counts.all} tools · offline-first sandbox</p>
                 <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight font-display text-slate-800 dark:text-white">
                   Free Online Utility Tools
                 </h1>
@@ -1540,7 +1543,7 @@ export default function App() {
                 {/* Popular searches chips */}
                 <div className="mt-6 flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs">
                   <span className="text-slate-400 font-medium">Quick Access:</span>
-                  <button onClick={() => openTool('image-compressor')} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/20 text-slate-600 dark:text-slate-300 font-medium border border-slate-200 dark:border-slate-700 transition-all cursor-pointer">
+                  <button onClick={() => openTool('compress-image')} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/20 text-slate-600 dark:text-slate-300 font-medium border border-slate-200 dark:border-slate-700 transition-all cursor-pointer">
                     Compress Image
                   </button>
                   <button onClick={() => openTool('json-formatter')} className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/20 text-slate-600 dark:text-slate-300 font-medium border border-slate-200 dark:border-slate-700 transition-all cursor-pointer">
@@ -2639,6 +2642,8 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
   const [scaleHeight, setScaleHeight] = useState<number>(0);
   const [aspectRatio, setAspectRatio] = useState<number>(1);
   const [keepAspect, setKeepAspect] = useState<boolean>(true);
+  const [outputFormat, setOutputFormat] = useState<string>('image/jpeg');
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -2653,6 +2658,15 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
     setOriginalSize(file.size);
     setCompressedUrl(null);
     setCompressedSize(0);
+
+    // Auto-detect format to preserve transparency/type if possible
+    if (file.type === 'image/png') {
+      setOutputFormat('image/png');
+    } else if (file.type === 'image/webp') {
+      setOutputFormat('image/webp');
+    } else {
+      setOutputFormat('image/jpeg');
+    }
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -2696,13 +2710,13 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
       if (ctx) {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         
-        // Export to JPEG with quality scale (0 to 1)
-        const outputType = 'image/jpeg';
-        const dataUrl = canvas.toDataURL(outputType, quality);
+        // JPEG and WebP support quality compression; PNG is generally lossless
+        const isPng = outputFormat === 'image/png';
+        const dataUrl = canvas.toDataURL(outputFormat, isPng ? undefined : quality);
         setCompressedUrl(dataUrl);
 
-        // Calculate size from base64 string bytes representation
-        const head = `data:${outputType};base64,`;
+        // Calculate size from base64 string representation
+        const head = `data:${outputFormat};base64,`;
         const approxSize = Math.round((dataUrl.length - head.length) * 3 / 4);
         setCompressedSize(approxSize);
         triggerNotification("Image Scaled & Compressed Successfully");
@@ -2714,7 +2728,8 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
   const downloadImage = () => {
     if (!compressedUrl || !imageFile) return;
     const link = document.createElement('a');
-    link.download = `toolgenic_${imageFile.name.replace(/\.[^/.]+$/, "")}.jpg`;
+    const ext = outputFormat === 'image/png' ? 'png' : outputFormat === 'image/webp' ? 'webp' : 'jpg';
+    link.download = `toolgenic_${imageFile.name.replace(/\.[^/.]+$/, "")}.${ext}`;
     link.href = compressedUrl;
     link.click();
   };
@@ -2735,7 +2750,7 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
         </div>
         <h2 className="text-xl font-bold tracking-tight">Local Image Compressor & Resizer</h2>
       </div>
-      <p className="text-xs text-slate-400 mb-6">Compress PNG/JPG files locally using browser Canvas. Re-scale aspect width and heights instantly.</p>
+      <p className="text-xs text-slate-400 mb-6">Compress PNG/JPG/WebP/AVIF files locally using browser Canvas. Re-scale aspect width and heights instantly.</p>
 
       <input 
         type="file" 
@@ -2746,16 +2761,45 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
       />
 
       {!imageFile ? (
-        /* Drag box */
+        /* Drag box with Drag and Drop handling and explicit Choose File button */
         <div 
           onClick={() => fileInputRef.current?.click()}
-          className={`h-48 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-colors hover:bg-blue-50/10 ${
-            theme === 'dark' ? 'border-slate-700 bg-slate-800/10' : 'border-slate-300 bg-slate-50'
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => {
+            setIsDragging(false);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+            const file = e.dataTransfer.files?.[0];
+            if (file) {
+              loadImage(file);
+            }
+          }}
+          className={`h-48 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all ${
+            isDragging 
+              ? 'border-blue-500 bg-blue-500/10' 
+              : theme === 'dark' ? 'border-slate-700 bg-slate-800/10 hover:bg-slate-800/20' : 'border-slate-300 bg-slate-50 hover:bg-slate-100/50'
           }`}
         >
-          <Upload className="w-10 h-10 text-slate-400 mb-3" />
-          <p className="text-xs font-bold text-slate-500">Click to upload your image file (PNG, JPG, WebP)</p>
-          <p className="text-[10px] text-slate-400 mt-1">100% Secure: Files never leave your local browser sandbox</p>
+          <Upload className={`w-10 h-10 mb-3 transition-colors ${isDragging ? 'text-blue-500' : 'text-slate-400'}`} />
+          <p className="text-xs font-bold text-slate-500 dark:text-slate-300 text-center px-4">
+            Drag & drop your image here, or click to upload
+          </p>
+          <p className="text-[10px] text-slate-400 mt-1">Supports PNG, JPG, WebP, AVIF (100% Client-Side)</p>
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              fileInputRef.current?.click();
+            }}
+            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
+          >
+            Choose File
+          </button>
         </div>
       ) : (
         /* Loaded tool screen */
@@ -2764,23 +2808,47 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
             {/* Control Form */}
             <div className="space-y-4">
               <div className="flex items-center justify-between text-xs text-slate-400 border-b pb-2">
-                <span className="font-semibold">Selected: {imageFile.name}</span>
+                <span className="font-semibold truncate max-w-[180px]">Selected: {imageFile.name}</span>
                 <span>Original Size: {formatBytes(originalSize)}</span>
               </div>
 
-              {/* Quality slider */}
+              {/* Output Format Dropdown */}
               <div>
-                <label className="text-xs font-bold text-slate-400 block mb-1.5 uppercase">Compression Quality: {Math.round(quality * 100)}%</label>
-                <input 
-                  type="range" 
-                  min="0.1" 
-                  max="1.0" 
-                  step="0.05"
-                  value={quality}
-                  onChange={(e) => setQuality(parseFloat(e.target.value))}
-                  className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                />
+                <label className="text-xs font-bold text-slate-400 block mb-1.5 uppercase">Output Format</label>
+                <select 
+                  value={outputFormat}
+                  onChange={(e) => {
+                    setOutputFormat(e.target.value);
+                    setCompressedUrl(null); // Clear compressed output to require re-apply
+                  }}
+                  className={`w-full p-2.5 rounded-xl border text-xs outline-none focus:border-blue-500 ${
+                    theme === 'dark' ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
+                  }`}
+                >
+                  <option value="image/jpeg">JPG / JPEG (Best for photos)</option>
+                  <option value="image/webp">WebP (Modern high-efficiency)</option>
+                  <option value="image/png">PNG (Lossless, supports transparency)</option>
+                </select>
               </div>
+
+              {/* Quality slider - hide or disable for PNG since it doesn't support quality */}
+              {outputFormat !== 'image/png' && (
+                <div>
+                  <label className="text-xs font-bold text-slate-400 block mb-1.5 uppercase">Compression Quality: {Math.round(quality * 100)}%</label>
+                  <input 
+                    type="range" 
+                    min="0.1" 
+                    max="1.0" 
+                    step="0.05"
+                    value={quality}
+                    onChange={(e) => {
+                      setQuality(parseFloat(e.target.value));
+                      setCompressedUrl(null);
+                    }}
+                    className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+                </div>
+              )}
 
               {/* Scaling settings */}
               <div className="grid grid-cols-2 gap-4">
@@ -2821,7 +2889,7 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
 
               <button 
                 onClick={performCompression}
-                className="w-full py-2.5 bg-blue-600 text-white font-bold text-xs rounded-xl shadow-lg hover:bg-blue-700 transition-all"
+                className="w-full py-2.5 bg-blue-600 text-white font-bold text-xs rounded-xl shadow-lg hover:bg-blue-700 transition-all cursor-pointer"
               >
                 Apply Scaling & Compress
               </button>
@@ -2841,9 +2909,9 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
                     </p>
                     <button 
                       onClick={downloadImage}
-                      className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-600 transition-all"
+                      className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-600 transition-all cursor-pointer"
                     >
-                      <Download className="w-3.5 h-3.5" /> Download Compressed JPG
+                      <Download className="w-3.5 h-3.5" /> Download Compressed {outputFormat === 'image/png' ? 'PNG' : outputFormat === 'image/webp' ? 'WebP' : 'JPG'}
                     </button>
                   </div>
                 </>
@@ -2861,7 +2929,7 @@ function ImageCompressorTool({ triggerNotification, theme }: WorkspaceProps) {
           <div className="flex justify-between items-center border-t border-slate-200 dark:border-slate-800 pt-4">
             <button 
               onClick={() => { setImageFile(null); setPreviewUrl(null); setCompressedUrl(null); }}
-              className="text-xs font-bold text-red-500 hover:underline"
+              className="text-xs font-bold text-red-500 hover:underline cursor-pointer"
             >
               Reset / Load Different Image
             </button>
