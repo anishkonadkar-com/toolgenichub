@@ -1,0 +1,2 @@
+# Netlify SPA redirect rule: rewrite all requests to index.html with HTTP 200
+/*    /index.html    200
